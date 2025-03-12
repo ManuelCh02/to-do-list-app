@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-do list</title>
+    <link rel="stylesheet" href="./styles/style.css">
 </head>
 <body>
     <main>
-        <section>
-            <div>
+        <section class="dashboard">
+            <div class="dashboard__app-title">
                 <h1>To Do App</h1>
             </div>
-            <div>
-                <button>
+            <div class="dashboard__add-task-button">
+                <button class="add-task-button">
                     <span>
                         <img src="./assets/icons/plus-icon.svg" alt="Add item" width="20px">
                     </span>
@@ -20,23 +21,26 @@
                 </button>
             </div>
         </section>
-        <section>
-            <div>
+        <section class="tasks">
+            <div class="tasks__title">
                 <h2>Tasks</h2>
             </div>
-            <div>
-                <!-- Tasks load here -->
-                 <article>
+            <div class="tasks__load-task-container">
+                <!-- Tasks load here 
+                  <article class="task-container">
                     <input type="checkbox" name="check-task" id="check-task">
                     <h3>Make dinner</h3>
-                    <div>
+                    <div class="task-container__actions">
                         <img src="./assets/icons/eye-icon.svg" alt="Visualice task description" width="20px">
                         <img src="./assets/icons/edit-icon.svg" alt="Edit task" width="20px">
                         <img src="./assets/icons/trash-icon.svg" alt="Delete task" width="20px">
                     </div>
-                 </article>
+                    Description goes here 
+                 </article> -->
             </div>
         </section>
     </main>
+
+    <script src="index.js"></script>
 </body>
 </html>
