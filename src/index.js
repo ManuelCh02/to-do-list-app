@@ -48,12 +48,13 @@ addTaskButton.addEventListener('click', () => {
             taskLoadContainer.firstChild.remove();
         });
 
-        newTaskAddButton.addEventListener('click', () => {
-            const newTaskElement = addNewTask(newTaskTitle.value, newTaskDescription.value);
-            taskLoadContainer.append(newTaskElement);
-            taskLoadContainer.firstChild.remove();
-            addDeleteTaskEvent();
-        });
+        newTaskAddButton.addEventListener('click', handleAddTaskClick);
+    };
+
+    function handleAddTaskClick() {
+        const newTaskElement = addNewTask(newTaskTitle.value, newTaskDescription.value);
+        taskLoadContainer.append(newTaskElement);
+        taskLoadContainer.firstChild.remove();
     };
 });
 
@@ -72,29 +73,18 @@ function addNewTask(title, description) {
     return articleTask
 };
 
-function addEditTaskEvent() {
-    let editTask = Array.from(document.querySelectorAll('task-container__actions__edit'));
+taskLoadContainer.addEventListener('click', (event) => {
+    if(event.target.classList.contains('task-container__actions__delete')) {
+        if(isTaskDeleted()) {
+            event.target.closest('.task-container').remove();
+        }
+    }
 
-    editTask.forEach((element) => {
-        element.addEventListener('click', (event) => {
-
-        });
-    });
-}
-
-function addDeleteTaskEvent() {
-    let deleteIcon = Array.from(document.querySelectorAll('.task-container__actions__delete'));
-
-    deleteIcon.forEach((element) => {
-        element.addEventListener('click', (event) => {
-            if(isTaskDeleted()) {
-                const eventTarget = event.target;
-                const eventParent = eventTarget.parentElement;
-                eventParent.parentElement.remove();
-            }
-        });
-    });
-};
+    if(event.target.classList.contains('task-container__actions__edit')) {
+        const taskContainer = event.target.closest('.task-container');
+        editTask(taskContainer)
+    }
+});
 
 function isTaskDeleted() {
     const userRespond = window.confirm('Are you sure you want to delete this task?');
@@ -102,6 +92,6 @@ function isTaskDeleted() {
     return userRespond
 };
 
-function editTaskInput() {
+function editTask() {
 
 }
