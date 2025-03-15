@@ -63,7 +63,7 @@ function addNewTask(title, description) {
     const articleTask = document.createElement('article');
     articleTask.classList.add('task-container');
     articleTask.innerHTML = `
-    <input type="checkbox" name="check-task" id="check-task">
+    <input type="checkbox" name="check-task" id="check-task" class="task-container-checkbox">
     <h3 class="task-title">${title}</h3>
     <p class="task-description">${description}</p>
     <div class="task-container__actions">
@@ -75,8 +75,6 @@ function addNewTask(title, description) {
 };
 
 taskLoadContainer.addEventListener('click', (event) => {
-    const taskArticle = event.target.classList.contains('task-container');
-
     if(event.target.classList.contains('task-container__actions__delete')) {
         if(isTaskDeleted()) {
             const taskTarget = event.target.closest('.task-container');
@@ -88,13 +86,23 @@ taskLoadContainer.addEventListener('click', (event) => {
 
     if(event.target.classList.contains('task-container__actions__edit')) {
         const taskContainer = event.target.closest('.task-container');
-        console.log(taskContainer)
+        const taskContainerChilds = taskContainer.children;
         const taskFormHtml = editTask(taskContainer);
 
         taskFormHtml.addEventListener('click', (event) => {
             event.preventDefault();
             if(event.target.classList.contains('edit-task-cancel-button')) {
-                // I'm stuck here, god dammit
+                event.target.closest('.edit-task-form').remove();
+                Array.from(taskContainer.children).forEach((element) => {
+                    element.classList.remove('display-hidden');
+                });
+            }
+            if(event.target.classList.contains('edit-task-save-button')) {
+                event.target.closest('.edit-task-form').remove();
+                updateTask(taskContainer, taskFormHtml);
+                Array.from(taskContainer.children).forEach((element) => {
+                    element.classList.remove('display-hidden');
+                });
             }
         });
     }
@@ -107,29 +115,42 @@ function isTaskDeleted() {
 };
 
 function editTask(taskParent) {
-    const parentElement = taskParent;
     const taskContainerChildren = taskParent.children;
     const taskTitle = taskContainerChildren[1];
     const taskDescription = taskContainerChildren[2];
-    const taskIcons = taskParent.closest('.task-container__actions');
 
-    let newTitleContent = '';
-    let newDescriptionContent = '';
+    const createFormElement = document.createElement('form');
+    createFormElement.classList.add('edit-task-form');
+    createFormElement.innerHTML = `
+    <input type="text" value="${taskTitle.textContent}">
+    <input type="text" value="${taskDescription.textContent}">
+    <div>
+        <button class="edit-task-cancel-button">Cancel</button>
+        <button class="edit-task-save-button">Save</button>
+    </div>
+    `;
 
-    const editTaskForm = `
-    <form class="edit-task-form">
-        <input type="text" value="${taskTitle.textContent}">
-        <input type="text" value="${taskDescription.textContent}">
-        <div>
-            <button class"edit-task-cancel-button">Cancel</button>
-            <button class"edit-task-save-button">Save</button>
-        </div>
-    </form>
-    `
+    Array.from(taskContainerChildren).forEach((element) => {
+        element.classList.add('display-hidden');
+    });
+    taskParent.append(createFormElement);
 
-    taskParent.innerHTML = editTaskForm;
+    return createFormElement
+}
 
-    return taskParent
+function updateTask(taskContainer, taskForm) {
+    const container = taskContainer;
+    const taskContainerChildren = container.children;
+    const taskFormChilds = taskForm.children;
+    const tasktTitleFormValue = taskFormChilds[0].value;
+    const taskDescriptionFormValue = taskFormChilds[1].value;
+
+    editTaskInLocalStorage(taskContainerChildren[1].textContent, tasktTitleFormValue, taskDescriptionFormValue);
+    
+    taskContainerChildren[1].textContent = tasktTitleFormValue;
+    taskContainerChildren[2].textContent = taskDescriptionFormValue;
+
+    return [tasktTitleFormValue, taskDescriptionFormValue]
 }
 
 function setTaskInLocalStorage(title, description) {
@@ -162,4 +183,22 @@ function deleteTaskFromStorage(taskTitle) {
     localStorage.setItem('tasks', JSON.stringify(updateTasksArray));
 }
 
-loadTasks()
+loadTasks();
+
+function editTaskInLocalStorage(lastTaskTitle, newTitle, newDescription) {
+    const tasksArray = JSON.parse(localStorage.getItem('tasks') || '[]');
+
+    const updateTasksArray = tasksArray.map((element) => {
+        if(element.title === lastTaskTitle) {
+            return {
+                ...element,
+                title: newTitle,
+                description: newDescription
+            };
+        }
+        return element
+    });
+
+    localStorage.clear();
+    localStorage.setItem('tasks', JSON.stringify(updateTasksArray));
+}
