@@ -1,3 +1,6 @@
+import { fetchApi } from "../api.js";
+import { taskInServer } from "../api.js";
+
 const addTaskButton = document.querySelector('.add-task-button');
 const taskLoadContainer = document.querySelector('.tasks__load-task-container');
 
@@ -86,7 +89,6 @@ taskLoadContainer.addEventListener('click', (event) => {
 
     if(event.target.classList.contains('task-container__actions__edit')) {
         const taskContainer = event.target.closest('.task-container');
-        const taskContainerChilds = taskContainer.children;
         const taskFormHtml = editTask(taskContainer);
 
         taskFormHtml.addEventListener('click', (event) => {
@@ -154,12 +156,33 @@ function updateTask(taskContainer, taskForm) {
 }
 
 function setTaskInLocalStorage(title, description) {
-    let tasksArray = JSON.parse(localStorage.getItem('tasks') || '[]');
-    
-    tasksArray.push({
+    const createNewTask = async () => {
+        const id = await currentElementsInServer();
+        const newTask = {
+            id: id,
+            title: title,
+            description: description
+        }
+
+        return newTask
+    };
+
+    const currentElementsInServer = async () => {
+        // Should call de API and return the lenght, But it doesn't work LOL
+        // Tomorrow will fix it 👍
+    };
+
+    const newTask = {
+        id: currentElementsInServer(),
         title: title,
         description: description
-    });
+    }
+
+    let tasksArray = JSON.parse(localStorage.getItem('tasks') || '[]');
+    
+    tasksArray.push(newTask);
+
+    taskInServer(createNewTask());
 
     localStorage.setItem(`tasks`, JSON.stringify(tasksArray));
 }

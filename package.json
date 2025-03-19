@@ -1,6 +1,7 @@
 {
   "name": "to-do-list-app",
   "version": "1.0.0",
+  "type": "module",
   "description": "To do list app for personal tasks",
   "main": "index.js",
   "scripts": {
@@ -16,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/ManuelCh02/to-do-list-app/issues"
   },
-  "homepage": "https://github.com/ManuelCh02/to-do-list-app#readme"
+  "homepage": "https://github.com/ManuelCh02/to-do-list-app#readme",
+  "dependencies": {
+    "json-server": "^1.0.0-beta.3"
+  }
 }
